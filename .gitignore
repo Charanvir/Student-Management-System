@@ -2,3 +2,7 @@
 .idea
 .DS_Store
 __pycache__
+/project_requirements.txt
+/design.fig
+/Age-Calculator.py
+/Average-Speed-Calculator.py
