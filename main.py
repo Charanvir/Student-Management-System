@@ -12,6 +12,7 @@ class MainWindow(QMainWindow):
 
         file_menu_item = self.menuBar().addMenu("&File")
         help_menu_item = self.menuBar().addMenu("&Help")
+        edit_menu_item = self.menuBar().addMenu("&Edit")
 
         # Self parameter will connect the QAction to the MainWindow class
         add_student_action = QAction("Add Student", self)
@@ -21,8 +22,13 @@ class MainWindow(QMainWindow):
 
         about_action = QAction("About", self)
         help_menu_item.addAction(about_action)
+
+        search_action = QAction("Search", self)
+        search_action.triggered.connect(self.search)
+        edit_menu_item.addAction(search_action)
         # Needs to be added on Mac if the second menu item does not appear
         about_action.setMenuRole(QAction.MenuRole.NoRole)
+        search_action.setMenuRole(QAction.MenuRole.NoRole)
 
         self.table = QTableWidget()
         self.table.setColumnCount(4)
@@ -49,6 +55,10 @@ class MainWindow(QMainWindow):
     def insert(self):
         dialog = InsertDialog()
         dialog.exec()
+
+    def search(self):
+        search = SearchDialog()
+        search.exec()
 
 
 # QDialog is a specific class which serves the purpose of creating dialog windows
@@ -95,6 +105,31 @@ class InsertDialog(QDialog):
         connection.close()
         # this will refresh the data for the main window when data in inserted from this window
         management_system.load_data()
+
+
+class SearchDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Search Student")
+        self.setFixedWidth(300)
+        self.setFixedHeight(300)
+
+        layout = QVBoxLayout()
+
+        self.student_name = QLineEdit()
+        self.student_name.setPlaceholderText("Name")
+        layout.addWidget(self.student_name)
+
+        self.button = QPushButton("Search")
+        self.button.clicked.connect(self.search_student)
+
+        layout.addWidget(self.button)
+
+        self.setLayout(layout)
+
+    def search_student(self):
+        print(self.student_name.text())
+
 
 
 app = QApplication(sys.argv)
