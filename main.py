@@ -30,6 +30,7 @@ class MainWindow(QMainWindow):
         edit_menu_item.addAction(search_action)
         # Needs to be added on Mac if the second menu item does not appear
         about_action.setMenuRole(QAction.MenuRole.NoRole)
+        about_action.triggered.connect(self.about)
 
         self.table = QTableWidget()
         self.table.setColumnCount(4)
@@ -88,8 +89,8 @@ class MainWindow(QMainWindow):
         dialog.exec()
 
     def search(self):
-        search = SearchDialog()
-        search.exec()
+        dialog = SearchDialog()
+        dialog.exec()
 
     def edit(self):
         dialog = EditDialog()
@@ -98,6 +99,24 @@ class MainWindow(QMainWindow):
     def delete(self):
         dialog = DeleteDialog()
         dialog.exec()
+
+    def about(self):
+        dialog = AboutDialog()
+        dialog.exec()
+
+
+class AboutDialog(QMessageBox):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("About")
+        content = """
+This app was created to keep track of students and their courses.
+The app shows all of the students in the database, along with the course they are currently enrolled in and their mobile number.
+Click the add icon to create a new record of a student, or search up a student using the search icon.
+You can select an existing student and either update their record, or delete is entirely.
+Enjoy! 
+        """
+        self.setText(content)
 
 
 # QDialog is a specific class which serves the purpose of creating dialog windows
@@ -261,7 +280,7 @@ class DeleteDialog(QDialog):
     def delete_student(self):
         connection = sqlite3.connect("database.db")
         cursor = connection.cursor()
-        cursor.execute("DELETE from students WHERE id = ?", (self.student_id, ))
+        cursor.execute("DELETE from students WHERE id = ?", (self.student_id,))
         connection.commit()
         cursor.close()
         connection.close()
